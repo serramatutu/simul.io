@@ -7,10 +7,6 @@
   "scripts": {
     "bundle": "rollup --config rollup.config.js"
   },
-  "dependencies": {
-    "buckets-js": "^1.98.2",
-    "pixi.js": "^4.8.4"
-  },
   "devDependencies": {
     "rollup": "1.0.1"
   }
