@@ -6,9 +6,11 @@
   },
   "scripts": {
     "bundle": "rollup --config rollup.config.js",
-    "test": "node --experimental-modules node_modules/.bin/mocha --require babel-register"
+    "build": "babel scripts --out-dir build --source-maps",
+    "test": "mocha --require babel-register"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "babel-register": "^6.26.0",
     "buckets-js": "^1.98.2",
@@ -16,5 +18,8 @@
     "rollup": "1.0.1",
     "rollup-plugin-commonjs": "^9.2.0",
     "rollup-plugin-node-resolve": "^4.0.0"
-  }
+  },
+  "bundleDependencies": [
+    "buckets-js"
+  ]
 }

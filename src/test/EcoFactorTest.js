@@ -1,8 +1,8 @@
 const buckets = require('buckets-js');
 const assert = require('assert');
 
-const util = require('../scripts/util/data-structure-conversion.mjs');
-const { EcoFactorDependencyManager } = require('../scripts/world/EcoFactor.mjs');
+const util = require('../scripts/util/data-structure-conversion.js');
+const { EcoFactorDependencyManager } = require('../scripts/world/EcoFactor.js');
 
 describe('EcoFactorDependencyManager', () => {
     describe('#_generateGraph()', () => {

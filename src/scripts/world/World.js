@@ -1,4 +1,4 @@
-import Tile from './Tile.mjs';
+import Tile from './Tile.js';
 
 class World {
     constructor(width = 1, height = 1) {

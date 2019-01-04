@@ -5,7 +5,7 @@ export default [{
     input: 'scripts/app.js',
     output: {
         name: 'simulIoApp',
-        file: 'scripts/dist/simul-io-app.js',
+        file: 'dist/simul-io-app.js',
         format: 'iife',
         globals: {
             "pixi.js": "PIXI"

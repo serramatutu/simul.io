@@ -1,5 +1,5 @@
-import World from './world/World.mjs';
-import { EcoFactorDependencyManager } from './world/EcoFactor.mjs';
+import World from './world/World.js';
+import { EcoFactorDependencyManager } from './world/EcoFactor.js';
 
 var a = new EcoFactorDependencyManager();
 

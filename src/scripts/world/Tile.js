@@ -1,4 +1,4 @@
-import {EcoFactor} from './EcoFactor.mjs';
+import {EcoFactor} from './EcoFactor.js';
 
 class Tile {
     constructor(x, y, defaultEcoFactors) {
