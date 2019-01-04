@@ -1,4 +1,4 @@
-const buckets = require('buckets-js');
+import buckets from 'buckets-js';
 
 function arrayToSet(array) {
     let s = new buckets.Set();
@@ -9,4 +9,4 @@ function arrayToSet(array) {
     return s;
 }
 
-module.exports = arrayToSet;
+export {arrayToSet};

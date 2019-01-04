@@ -6,11 +6,15 @@
   },
   "scripts": {
     "bundle": "rollup --config rollup.config.js",
-    "test": "mocha"
+    "test": "node --experimental-modules node_modules/.bin/mocha --require babel-register"
   },
   "devDependencies": {
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
     "buckets-js": "^1.98.2",
     "mocha": "^5.2.0",
-    "rollup": "1.0.1"
+    "rollup": "1.0.1",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0"
   }
 }

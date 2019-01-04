@@ -1,4 +1,4 @@
-import Tile from "./Tile.js";
+import Tile from './Tile.mjs';
 
 class World {
     constructor(width = 1, height = 1) {
@@ -16,4 +16,4 @@ class World {
     }
 };
 
-export default World;
+export default { World };

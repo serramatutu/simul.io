@@ -1,3 +1,5 @@
+import buckets from 'buckets-js';
+
 /**
  * A directed graph to encapsulate EcoFactor dependencies for
  * determining the optimal calculation order
@@ -109,7 +111,7 @@ class EcoFactorDependencyManager {
     }
 }
 
-module.exports = EcoFactorDependencyManager;
+export { EcoFactorDependencyManager };
 
 class EcoFactor {
     constructor(defaultValue, dependencies = new buckets.Set(), calculator = EcoFactor.defaultCalculator) {
@@ -140,4 +142,4 @@ EcoFactor.defaultCalculator = (defaultValue, ecofactors) => {
     return defaultValue;
 }
 
-module.exports = EcoFactor;
+export { EcoFactor };
