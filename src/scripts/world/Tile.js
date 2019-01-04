@@ -1,10 +1,4 @@
-import buckets from 'buckets-js';
-
-class EcoFactor {
-    constructor(name) {
-        
-    }
-}
+import { EcoFactor } from './EcoFactor.js'
 
 class Tile {
     constructor(x, y, defaultEcoFactors) {
