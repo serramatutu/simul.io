@@ -1,4 +1,4 @@
-import World from './world/World.js';
+import World from './world/World';
 import { EcoFactorDependencyManager } from './world/EcoFactor.js';
 
 var a = new EcoFactorDependencyManager();

@@ -8,5 +8,4 @@ function arrayToSet(array) {
 
     return s;
 }
-
-export {arrayToSet};
+export { arrayToSet };

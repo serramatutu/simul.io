@@ -1,18 +1,17 @@
-const buckets = require('buckets-js');
-const assert = require('assert');
-
-const util = require('../scripts/util/data-structure-conversion.js');
-const { EcoFactorDependencyManager } = require('../scripts/world/EcoFactor.js');
+import buckets from 'buckets-js';
+import assert from 'assert';
+import * as util from '../scripts/util/data-structure-conversion.js';
+import { EcoFactorDependencyManager } from '../scripts/world/EcoFactor.js';
 
 describe('EcoFactorDependencyManager', () => {
     describe('#_generateGraph()', () => {
         it('should resolve unresolved dependencies', () => {
-            var t = new EcoFactorDependencyManager();
-            t.addEcofactor('SUNLIGHT', util.arrayToSet(['HUMIDITY']));
-            t.addEcofactor('HUMIDITY', new buckets.Set());
+            var m = new EcoFactorDependencyManager();
+            m.addEcofactor('SUNLIGHT', util.arrayToSet(['HUMIDITY']));
+            m.addEcofactor('HUMIDITY', new buckets.Set());
 
-            var graph = t._generateGraph();
-            assert.equal(true, graph.get('HUMIDITY').out.contains('SUNLIGHT'));
+            assert.equal(true, m.get('HUMIDITY').dependants.contains('SUNLIGHT'));
+            assert.equal(true, m.get('SUNLIGHT').dependencies.contains('HUMIDITY'));
         });
     });
 })
