@@ -109,6 +109,8 @@ class EcoFactorDependencyManager {
     }
 }
 
+module.exports = EcoFactorDependencyManager;
+
 class EcoFactor {
     constructor(defaultValue, dependencies = new buckets.Set(), calculator = EcoFactor.defaultCalculator) {
         this._defaultValue = defaultValue;
@@ -138,15 +140,4 @@ EcoFactor.defaultCalculator = (defaultValue, ecofactors) => {
     return defaultValue;
 }
 
-export {
-    EcoFactor
-}
-
-export {
-    EcoFactorDependencyManager
-}
-
-export default {
-    EcoFactorDependencyManager,
-    EcoFactor
-}
+module.exports = EcoFactor;
