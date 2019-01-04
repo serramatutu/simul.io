@@ -26,8 +26,10 @@ function objectToDictionary(obj) {
         return obj;
 
     let d = new buckets.Dictionary();
-    for (let prop in obj)
-        d.set(prop, obj[prop]);
+    for (let prop in obj) {
+        if (obj.hasOwnProperty(prop))
+            d.set(prop, obj[prop]);
+    }
 
     return d;
 }
