@@ -1,12 +1,10 @@
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 
-export default [{
-    input: 'scripts/app.js',
+export default {
+    input: 'src/scripts/app.js',
+    format: 'iife',
     output: {
-        name: 'simulIoApp',
-        file: 'dist/simul-io-app.js',
-        format: 'iife',
         globals: {
             "pixi.js": "PIXI"
         }
@@ -18,4 +16,4 @@ export default [{
         resolve(),
         commonjs()
     ]
-}]
+}

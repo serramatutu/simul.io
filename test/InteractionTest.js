@@ -1,6 +1,6 @@
 import assert from 'assert';
-import { convert } from '../scripts/util/util';
-import { InteractionProfile, CompositeInteractionProfile } from '../scripts/world/Interaction';
+import { convert } from '../src/scripts/util/util';
+import { InteractionProfile, CompositeInteractionProfile } from '../src/scripts/world/Interaction';
 
 describe('InteractionProfile', () => {
     describe('graph operations', () => {

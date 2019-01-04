@@ -1,5 +1,5 @@
 import assert from 'assert';
-import * as util from '../scripts/util/util';
+import * as util from '../src/scripts/util/util';
 
 describe('util library', () => {
     describe('map', () => {
