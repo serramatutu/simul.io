@@ -61,21 +61,21 @@ class InteractionProfile {
 
     update(valueDict) {
         var newValues = new buckets.Dictionary();
-        valueDict.forEach((name, value) => {
-            var variableObj = this._variables.get(name)
+        valueDict.forEach(name => {
+            var variableObj = this._variables.get(name);
             newValues.set(name, 
                 variableObj.calculator(valueDict.get(name), // invokes the calculator over the values
-                                       variableObj.defaultValue, 
-                                       valueDict));
+                    variableObj.defaultValue, 
+                    valueDict));
         });
 
         return newValues;
     }
 }
 
-InteractionProfile.defaultCalculator = (value, defaultValue, dependencyValues) => {
+InteractionProfile.defaultCalculator = (value, defaultValue) => {
     return defaultValue;
-}
+};
 
 export { InteractionProfile };
 
@@ -118,7 +118,7 @@ class CompositeInteractionProfile {
         var newValues = new buckets.Dictionary();
         this._profiles.forEach(profile => {
             var profValues = profile.update(valueDict);
-            var weight = this._profileWeights.get(profile.name)
+            var weight = this._profileWeights.get(profile.name);
 
             profValues.forEach((name, value) => {
                 var currentValue = newValues.get(name) || 0;
@@ -129,7 +129,7 @@ class CompositeInteractionProfile {
         var ret = new buckets.Dictionary();
         newValues.forEach((name, value) => {
             ret.set(name, value/this._totalWeight);
-        })
+        });
 
         return ret;
     }

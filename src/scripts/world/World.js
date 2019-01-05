@@ -14,6 +14,6 @@ class World {
                 this._worldMatrix[i][j] = new Tile(i, j, {});
         }
     }
-};
+}
 
 export default { World };
