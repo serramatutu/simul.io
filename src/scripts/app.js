@@ -1,3 +1,7 @@
-import World from './world/World';
+import * as biome from './world/Biome';
 
-const world = new World(5, 5);
+window.onload = () => {
+    var logger = document.body.getElementById('logger');
+    var b = new biome.BiomeGenerator('tundra', 0);
+    logger.innerHTML += b.priority;
+};
