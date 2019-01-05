@@ -1,10 +1,14 @@
-import * as biome from './world/Biome';
+import * as PIXI from 'pixi.js';
+// import {World} from './world/World';
 
 function main() {
     window.onload = () => {
-        var logger = document.body.getElementById('logger');
-        var b = new biome.BiomeGenerator('tundra', 0);
-        logger.innerHTML += b.priority;
+        var container = document.getElementById('canvas-container');
+        var app = new PIXI.Application(container.clientWidth, container.clientHeight, {
+            backgroundColor: 0xFFFFFF
+        });
+        container.appendChild(app.view);
+
     };
 }
 

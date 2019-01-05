@@ -1,4 +1,5 @@
 import path from 'path';
+import CleanPlugin from 'clean-webpack-plugin';
 import HtmlPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
@@ -18,6 +19,10 @@ export default {
         filename: '[name].js'
     },
     mode: nodeEnv,
+    devtool: nodeEnv == 'development' ? 'source-map' : false,
+    devServer: {
+        contentBase: './dist'
+    },
     optimization: {
         minimizer: [
             new UglifyJsPlugin({
@@ -56,6 +61,7 @@ export default {
         }]
     },
     plugins: [
+        new CleanPlugin('./dist'),
         new HtmlPlugin({
             template: 'src/index.html',
             inject: 'head'
