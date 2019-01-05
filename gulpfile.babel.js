@@ -3,8 +3,8 @@ import source from 'vinyl-source-stream';
 import buffer from 'vinyl-buffer';
 import less from 'gulp-less';
 import minifyCss from 'gulp-minify-css';
+import eslint from 'gulp-eslint';
 import rollup from 'rollup-stream';
-import rollupConfig from './rollup.config';
 import del from 'del';
 import uglify from 'gulp-uglify';
 
@@ -13,11 +13,19 @@ function clean(callback) {
     callback();
 }
 
+function lint(callback) {
+    src('./src/scripts/**/*.js')
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+    callback();
+}
+
 function js(callback) {
-    rollup(rollupConfig)
+    rollup('./rollup.config.js')
         .pipe(source('simul-io-app.js', './src/scripts'))
         .pipe(buffer())
-        // .pipe(uglify())
+        .pipe(uglify())
         .pipe(dest('./dist/scripts/'));
     callback();
 }
@@ -26,7 +34,7 @@ function css(callback) {
     src('./src/css/style.less')
         .pipe(less())
         .pipe(minifyCss())
-        .pipe(dest('./dist/css/'))
+        .pipe(dest('./dist/css/'));
     callback();
 }
 
@@ -39,7 +47,7 @@ function html(callback) {
 var build = series(
     clean,
     parallel(
-        js, css, html
+        series(lint, js), css, html
     )
 );
 
