@@ -1,29 +1,18 @@
 /**
- * Used to initialize partial world matrices values according to a biome specification
+ * Used to initialize partial world matrices values according to a biome specification.
+ * This should not be instanced directly without derivation
  */
 class BiomeGenerator {
-    /**
-     * 
-     * @param {string} biomeName the biome name
-     * @param {number} priority the biomes priority over other biomes
-     * @param {InteractionProfile} interactionProfile how ecofactors behave in this biome
-     */
-    constructor(biomeName, priority, interactionProfile) {
-        this._biomeName = biomeName;
-        this._priority = priority;
-        this._interactionProfile = interactionProfile;
-    }
-
     get name() {
-        return this._biomeName;
+        return this.constructor.name;
     }
 
     get priority() {
-        return this._priority;
+        return this.constructor.priority;
     }
 
     get interactionProfile() {
-        return this._interactionProfile;
+        return this.constructor.interactionProfile;
     }
 
     /**
@@ -45,5 +34,7 @@ class BiomeGenerator {
     }
 }
 
-export { BiomeGenerator };
+BiomeGenerator.priority = 0;
+BiomeGenerator.initializationStrategy = null;
 
+export { BiomeGenerator };

@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import buckets from 'buckets-js';
 import * as util from '../util/util';
 
@@ -5,10 +6,49 @@ import * as util from '../util/util';
  * A directed graph to manage complex variable dependencies and their values
  */
 class InteractionProfile {
-    constructor(name = null) {
-        this._name = name || util.random.makeId();
-        this._variables = new buckets.Dictionary();
+    /**
+     * 
+     * @param {string} [name] this profile's name
+     * @param {Array} [variables] this profile's variable scheme.
+     * @example
+     * var i = new InteactionProfile('the profile', {
+     *      'A_VARIABLE': [
+     *          20, // its default value
+     *          ['ANOTHER_VARIABLE'], // its dependencies
+     *          (value, defaultValue, deps) => {
+     *              return value + deps['ANOTHER_VARIABLE']
+     *          }
+     *      ],
+     *      'ANOTHER_VARIABLE': 25
+     * });
+     */
+    constructor(name = null, variables = []) {
+        this._name = util.operation.generateName(this, name);
         this._unresolvedDeps = new buckets.MultiDictionary();
+        this._variables = new buckets.Dictionary();
+        this._parseVariableScheme(variables);
+    }
+
+    _parseVariableScheme(scheme) {
+        _.each(scheme, (value, name) => {
+            var defaultValue = 0, 
+                dependencies = new buckets.Set(), 
+                calculator = InteractionProfile.defaultCalculator;
+            if (typeof value === 'number')
+                defaultValue = value;
+            else if (_.isArray(value)) {
+                value.forEach(opt => {
+                    if (typeof opt === 'number')
+                        defaultValue = opt;
+                    else if (_.isArray(opt))
+                        dependencies = util.convert.arrayToSet(opt);
+                    else if (typeof opt === 'function')
+                        calculator = opt;
+                });
+            }
+
+            this.add(name, defaultValue, dependencies, calculator);
+        });
     }
 
     get name() {
@@ -85,7 +125,7 @@ export { InteractionProfile };
  */
 class CompositeInteractionProfile {
     constructor(name = null) {
-        this._name = name || util.random.makeId();
+        this._name = util.operation.generateName(this, name);
         this._profiles = new buckets.Set((p) => {
             return p.name;
         });

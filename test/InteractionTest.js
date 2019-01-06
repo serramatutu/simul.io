@@ -7,9 +7,13 @@ describe('InteractionProfile', () => {
         var profile;
 
         beforeEach(() => {
-            profile = new InteractionProfile();
-            profile.add('SUNLIGHT', 20, convert.arrayToSet(['HUMIDITY']));
-            profile.add('HUMIDITY', 40, convert.arrayToSet([]));
+            profile = new InteractionProfile('the profile', {
+                'SUNLIGHT': [20, ['HUMIDITY']],
+                'HUMIDITY': 40
+            });
+            // profile = new InteractionProfile();
+            // profile.add('SUNLIGHT', 20, convert.arrayToSet(['HUMIDITY']));
+            // profile.add('HUMIDITY', 40, convert.arrayToSet([]));
         });
 
         it('should resolve unresolved dependencies', () => {

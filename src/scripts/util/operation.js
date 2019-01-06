@@ -1,22 +1,17 @@
 import buckets from 'buckets-js';
+import _ from 'underscore';
 import * as convert from './convert';
 
 /**
- * 
- * @param {Object} obj the object to be looped through
- * @param {function(propName, propvalue):*} callback the callback function. Returing false is optional
- * if breaking from the loop is desired.
+ * Generate a name to the object.
+ * @param {Object} obj 
+ * @param {string} [name] the name to be used. If not given, generates an unique ID
  */
-function foreachProperty(obj, callback) {
-    for (let prop in obj) {
-        if (!obj.hasOwnProperty(prop))
-            continue;
-        if (callback(prop, obj[prop]) === false)
-            break;
-    }
+function generateName(obj, name) {
+    return obj.constructor.name + ':' + (name || _.uniqueId());
 }
 
-export { foreachProperty };
+export { generateName };
 
 /**
  * Maps every element in s to a new form described by func
