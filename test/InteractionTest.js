@@ -8,8 +8,13 @@ describe('InteractionProfile', () => {
 
         beforeEach(() => {
             profile = new InteractionProfile('the profile', {
-                'SUNLIGHT': [20, ['HUMIDITY']],
-                'HUMIDITY': 40
+                'SUNLIGHT': {
+                    min: 0, max: 1,
+                    dependencies: ['HUMIDITY']
+                },
+                'HUMIDITY': {
+                    min: 0, max: 1
+                }
             });
             // profile = new InteractionProfile();
             // profile.add('SUNLIGHT', 20, convert.arrayToSet(['HUMIDITY']));
@@ -28,12 +33,12 @@ describe('InteractionProfile', () => {
         });
 
         it('should correctly update all variables', () => {
-            var updated = profile.update(convert.objectToDictionary({
-                "SUNLIGHT": 25,
-                "HUMIDITY": 20
+            var updated = profile.update(0, convert.objectToDictionary({
+                'SUNLIGHT': 0.2,
+                'HUMIDITY': 0.1
             }));
-            assert.strictEqual(20, updated.get("SUNLIGHT"));
-            assert.strictEqual(40, updated.get("HUMIDITY"));
+            assert.strictEqual(0.2, updated.get('SUNLIGHT'));
+            assert.strictEqual(0.1, updated.get('HUMIDITY'));
         });
     });
 });
@@ -44,9 +49,13 @@ describe('CompositeInteractionProfile', () => {
         profile = new CompositeInteractionProfile();
         
         p1 = new InteractionProfile('a');
-        p1.add('SUNLIGHT', 20);
+        p1.add('SUNLIGHT', {
+            calculator: () => { return 0; }
+        });
         p2 = new InteractionProfile('b');
-        p2.add('SUNLIGHT', 40);
+        p2.add('SUNLIGHT', {
+            calculator: () => { return 1; }
+        });
 
         profile.addProfile(p1, 1);
         profile.addProfile(p2, 2);
@@ -58,10 +67,10 @@ describe('CompositeInteractionProfile', () => {
     });
 
     it('should calculate values correctly', () => {
-        var updated = profile.update(convert.objectToDictionary({
-            "SUNLIGHT": 20
+        var updated = profile.update(0, convert.objectToDictionary({
+            'SUNLIGHT': 0
         }));
 
-        assert.strictEqual(updated.get("SUNLIGHT"), (20*1 + 40*2)/3);
-    })
+        assert.strictEqual(updated.get('SUNLIGHT'), 2/3);
+    });
 });

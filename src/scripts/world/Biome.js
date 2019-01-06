@@ -19,7 +19,7 @@ class BiomeGenerator {
      * Rescribes a biome initialization strategy based on a matrix of given width and height
      * @param {number} width the biome's width
      * @param {number} height the biome's height
-     * @returns {Array} a matrix of width x height containing objects mapping each ecofactor to its default value
+     * @returns {Array} a matrix of width x height containing objects mapping each ecofactor to its min and max malue
      */
     initializationStrategy(width, height) {
         var ret = Array(width);

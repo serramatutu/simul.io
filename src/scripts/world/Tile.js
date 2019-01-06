@@ -1,9 +1,10 @@
-import { convert } from '../util/util';
+import * as util from '../util/util';
 
 class Tile {
-    constructor(x, y, interactionProfile, defaultEcofactorValues) {
+    constructor(x, y, interactionProfile, ecoFactorBoundaries, startInterpolations) {
         this._interactionProfile = interactionProfile;
-        this._defaultEcofactorValues = convert.arrayToSet(defaultEcofactorValues);
+        this._ecofactorBoundaries = ecoFactorBoundaries;
+        this._ecoFactorInterpolations = util.convert.objectToDictionary(startInterpolations);
         this._x = x;
         this._y = y;
     }
@@ -23,6 +24,22 @@ class Tile {
     get defaultEcofactorValues() {
         return this._defaultEcofactorValues;
     }
+
+    getEcofactorValue(name) {
+        var min = this._ecofactorBoundaries[name].min,
+            max = this._ecofactorBoundaries[name].max,
+            interp = this._ecoFactorInterpolations.get(name);
+        return (max - min) * interp + min;
+    }
+
+    get color() {
+        // TODO: Temporary
+        return util.math.lerpColor(0x000000, 0xFFFFFF, this.getEcofactorValue('SUNLIGHT'));
+    }
+
+    update(deltaTime) {
+        this._ecoFactorInterpolations = this._interactionProfile.update(deltaTime, this._ecoFactorInterpolations);
+    }
 }
 
-export default { Tile };
+export default Tile;

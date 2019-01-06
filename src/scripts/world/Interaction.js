@@ -13,41 +13,21 @@ class InteractionProfile {
      * @example
      * var i = new InteactionProfile('the profile', {
      *      'A_VARIABLE': [
-     *          20, // its default value
      *          ['ANOTHER_VARIABLE'], // its dependencies
-     *          (value, defaultValue, deps) => {
+     *          (deltaTime, value, deps) => { // its interpolation calculator
      *              return value + deps['ANOTHER_VARIABLE']
      *          }
      *      ],
      *      'ANOTHER_VARIABLE': 25
      * });
      */
-    constructor(name = null, variables = []) {
+    constructor(name = null, variables = {}) {
         this._name = util.operation.generateName(this, name);
         this._unresolvedDeps = new buckets.MultiDictionary();
         this._variables = new buckets.Dictionary();
-        this._parseVariableScheme(variables);
-    }
-
-    _parseVariableScheme(scheme) {
-        _.each(scheme, (value, name) => {
-            var defaultValue = 0, 
-                dependencies = new buckets.Set(), 
-                calculator = InteractionProfile.defaultCalculator;
-            if (typeof value === 'number')
-                defaultValue = value;
-            else if (_.isArray(value)) {
-                value.forEach(opt => {
-                    if (typeof opt === 'number')
-                        defaultValue = opt;
-                    else if (_.isArray(opt))
-                        dependencies = util.convert.arrayToSet(opt);
-                    else if (typeof opt === 'function')
-                        calculator = opt;
-                });
-            }
-
-            this.add(name, defaultValue, dependencies, calculator);
+        
+        _.each(variables, (value, key) => {
+            this.add(key, value);
         });
     }
 
@@ -55,7 +35,12 @@ class InteractionProfile {
         return this._name;
     }
 
-    add(name, defaultValue = 0, dependencies = new buckets.Set(), calculator = InteractionProfile.defaultCalculator) {
+    add(name, options = {}) {
+        var dependencies = !options.dependencies ?
+                new buckets.Set()
+                : util.convert.arrayToSet(options.dependencies),
+            calculator = options.calculator || InteractionProfile.defaultCalculator;
+
         
         dependencies.forEach(dep => {
             if (this._variables.containsKey(dep))
@@ -65,7 +50,6 @@ class InteractionProfile {
         });
 
         this._variables.set(name, {
-            defaultValue: defaultValue,
             calculator: calculator,
             dependencies: dependencies, // dependencies
             dependants: util.convert.arrayToSet(this._unresolvedDeps.get(name)) // nodes which depend on this node
@@ -99,22 +83,22 @@ class InteractionProfile {
         return this._unresolvedDeps.containsKey(dependency);
     }
 
-    update(valueDict) {
+    update(deltaTime, valueDict) {
         var newValues = new buckets.Dictionary();
         valueDict.forEach(name => {
             var variableObj = this._variables.get(name);
-            newValues.set(name, 
-                variableObj.calculator(valueDict.get(name), // invokes the calculator over the values
-                    variableObj.defaultValue, 
-                    valueDict));
+            var interpolation = variableObj.calculator.bind(variableObj.calculator)(deltaTime, 
+                valueDict.get(name), 
+                valueDict);
+            newValues.set(name, interpolation);
         });
 
         return newValues;
     }
 }
 
-InteractionProfile.defaultCalculator = (value, defaultValue) => {
-    return defaultValue;
+InteractionProfile.defaultCalculator = function(deltaTime, currentInterpolation) {
+    return currentInterpolation;
 };
 
 export { InteractionProfile };
@@ -154,10 +138,10 @@ class CompositeInteractionProfile {
         this._profiles.remove(profile);
     }
 
-    update(valueDict) {
+    update(deltaTime, valueDict) {
         var newValues = new buckets.Dictionary();
         this._profiles.forEach(profile => {
-            var profValues = profile.update(valueDict);
+            var profValues = profile.update(deltaTime, valueDict);
             var weight = this._profileWeights.get(profile.name);
 
             profValues.forEach((name, value) => {

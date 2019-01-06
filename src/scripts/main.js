@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js';
-// import {World} from './world/World';
+import World from './world/World';
 
 function main() {
     window.onload = () => {
@@ -9,6 +9,9 @@ function main() {
         });
         container.appendChild(app.view);
 
+        var world = new World();
+        app.stage.addChild(world.pixiContainer);
+        app.ticker.add(world.update.bind(world));
     };
 }
 
