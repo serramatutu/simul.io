@@ -1,4 +1,4 @@
-import { hexToRgb, rgbToHex } from './convert';
+import { hexToRgba, rgbaToHex } from './convert';
 
 /**
  * Interpolates between two colors based on a transition value
@@ -7,13 +7,14 @@ import { hexToRgb, rgbToHex } from './convert';
  * @param {number([0;1])} t the interpolation factor 
  */
 function lerpColor(start, end, t) {
-    let startRgb = hexToRgb(start),
-        endRgb = hexToRgb(end);
+    let startRgba = hexToRgba(start),
+        endRgba = hexToRgba(end);
     
-    return rgbToHex([
-        startRgb[0] + (endRgb[0] - startRgb[0]) * t,
-        startRgb[1] + (endRgb[1] - startRgb[1]) * t,
-        startRgb[2] + (endRgb[2] - startRgb[2]) * t
+    return rgbaToHex([
+        endRgba[0] + (startRgba[0] - endRgba[0]) * t,
+        endRgba[1] + (startRgba[1] - endRgba[1]) * t,
+        endRgba[2] + (startRgba[2] - endRgba[2]) * t,
+        endRgba[3] + (startRgba[3] - endRgba[3]) * t
     ]);
 }
 

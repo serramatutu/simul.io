@@ -14,8 +14,8 @@ class InteractionProfile {
      * var i = new InteactionProfile('the profile', {
      *      'A_VARIABLE': [
      *          ['ANOTHER_VARIABLE'], // its dependencies
-     *          (deltaTime, value, deps) => { // its interpolation calculator
-     *              return value + deps['ANOTHER_VARIABLE']
+     *          (deltaTime, vars, deps) => { // its interpolation calculator
+     *              return vars.value + deps['ANOTHER_VARIABLE']
      *          }
      *      ],
      *      'ANOTHER_VARIABLE': 25
@@ -36,9 +36,9 @@ class InteractionProfile {
     }
 
     add(name, options = {}) {
-        var dependencies = !options.dependencies ?
-                new buckets.Set()
-                : util.convert.arrayToSet(options.dependencies),
+        var dependencies = options.dependencies ?
+                util.convert.arrayToSet(options.dependencies)
+                : new buckets.Set(),
             calculator = options.calculator || InteractionProfile.defaultCalculator;
 
         
@@ -51,7 +51,7 @@ class InteractionProfile {
 
         this._variables.set(name, {
             calculator: calculator,
-            dependencies: dependencies, // dependencies
+            dependencies: dependencies,
             dependants: util.convert.arrayToSet(this._unresolvedDeps.get(name)) // nodes which depend on this node
         });
 
@@ -83,22 +83,23 @@ class InteractionProfile {
         return this._unresolvedDeps.containsKey(dependency);
     }
 
-    update(deltaTime, valueDict) {
+    update(deltaTime, varsDict) {
         var newValues = new buckets.Dictionary();
-        valueDict.forEach(name => {
+        varsDict.forEach(name => {
             var variableObj = this._variables.get(name);
-            var interpolation = variableObj.calculator.bind(variableObj.calculator)(deltaTime, 
-                valueDict.get(name), 
-                valueDict);
-            newValues.set(name, interpolation);
+            var newValue = variableObj.calculator.bind(variableObj.calculator)(
+                deltaTime,
+                varsDict.get(name),
+                varsDict);
+            newValues.set(name, newValue);
         });
 
         return newValues;
     }
 }
 
-InteractionProfile.defaultCalculator = function(deltaTime, currentInterpolation) {
-    return currentInterpolation;
+InteractionProfile.defaultCalculator = function(deltaTime, vars) {
+    return vars.value;
 };
 
 export { InteractionProfile };

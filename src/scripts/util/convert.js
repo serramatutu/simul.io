@@ -1,30 +1,31 @@
 import buckets from 'buckets-js';
 
 /**
- * Converts a Hex color into an RGB color
+ * Converts a Hex color into an RGBA color
  * @param {number} hex the hex color value
- * @returns {Array(2)} array with values R, G, B in order
+ * @returns {Array(3)} array with values R, G, B, A in order
  */
-function hexToRgb(hex) {
+function hexToRgba(hex) {
     return[
-        (hex & 0xFF0000) >> 16,
-        (hex & 0x00FF00) >> 8,
-        hex & 0x0000FF
+        (hex & 0xFF000000) >> 24,
+        (hex & 0x00FF0000) >> 16,
+        (hex & 0x0000FF00) >> 8,
+        (hex & 0x000000FF)
     ];
 }
 
-export { hexToRgb };
+export { hexToRgba };
 
 /**
- * Converts an RGB color into an hex color
- * @param {Array(2)} rgb array with values R, G, B in order
+ * Converts an RGBA color into an hex color
+ * @param {Array(3)} rgba array with values R, G, B, A in order
  * @returns {number} the hex color number
  */
-function rgbToHex(rgb) {
-    return rgb[0] << 16 | rgb[1] << 8 | rgb[2];
+function rgbaToHex(rgba) {
+    return rgba[0] << 24 | rgba[1] << 16 | rgba[2] << 8 | rgba[3];
 }
 
-export { rgbToHex };
+export { rgbaToHex };
 
 /**
  * Casts a normal array as a @type {buckets.Set};

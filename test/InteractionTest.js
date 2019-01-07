@@ -34,8 +34,12 @@ describe('InteractionProfile', () => {
 
         it('should correctly update all variables', () => {
             var updated = profile.update(0, convert.objectToDictionary({
-                'SUNLIGHT': 0.2,
-                'HUMIDITY': 0.1
+                'SUNLIGHT': {
+                    value: 0.2
+                },
+                'HUMIDITY': {
+                    value: 0.1
+                }
             }));
             assert.strictEqual(0.2, updated.get('SUNLIGHT'));
             assert.strictEqual(0.1, updated.get('HUMIDITY'));
@@ -68,7 +72,9 @@ describe('CompositeInteractionProfile', () => {
 
     it('should calculate values correctly', () => {
         var updated = profile.update(0, convert.objectToDictionary({
-            'SUNLIGHT': 0
+            'SUNLIGHT': {
+                value: 0
+            }
         }));
 
         assert.strictEqual(updated.get('SUNLIGHT'), 2/3);

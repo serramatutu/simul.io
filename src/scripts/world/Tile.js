@@ -1,10 +1,9 @@
 import * as util from '../util/util';
 
 class Tile {
-    constructor(x, y, interactionProfile, ecoFactorBoundaries, startInterpolations) {
+    constructor(x, y, interactionProfile, ecofactorVars) {
         this._interactionProfile = interactionProfile;
-        this._ecofactorBoundaries = ecoFactorBoundaries;
-        this._ecoFactorInterpolations = util.convert.objectToDictionary(startInterpolations);
+        this._ecofactorVars = util.convert.objectToDictionary(ecofactorVars);
         this._x = x;
         this._y = y;
     }
@@ -21,24 +20,20 @@ class Tile {
         return this._interactionProfile;
     }
 
-    get defaultEcofactorValues() {
-        return this._defaultEcofactorValues;
-    }
-
     getEcofactorValue(name) {
-        var min = this._ecofactorBoundaries[name].min,
-            max = this._ecofactorBoundaries[name].max,
-            interp = this._ecoFactorInterpolations.get(name);
-        return (max - min) * interp + min;
+        var fac = this._ecofactorVars.get(name);
+        return (fac.max - fac.min) * fac.value + fac.min;
     }
 
     get color() {
-        // TODO: Temporary
-        return util.math.lerpColor(0x000000, 0xFFFFFF, this.getEcofactorValue('SUNLIGHT'));
+        return util.math.lerpColor(0x00000000, 0xFFFFFFFF, this.getEcofactorValue('SUNLIGHT'));
     }
 
     update(deltaTime) {
-        this._ecoFactorInterpolations = this._interactionProfile.update(deltaTime, this._ecoFactorInterpolations);
+        var ecofactorValues = this._interactionProfile.update(deltaTime, this._ecofactorVars);
+        this._ecofactorVars.forEach((name, obj) => {
+            obj.value = ecofactorValues.get(name);
+        });
     }
 }
 

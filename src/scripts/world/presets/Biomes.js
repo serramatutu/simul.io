@@ -21,23 +21,18 @@ var DefaultEcoFactors = {
     },
 
     'SUNLIGHT': {
-        calculator: (() => {
-            function calculator(deltaTime) {
-                this.dayCycle = (this.dayCycle + (deltaTime / tuning.DAY_LENGTH)) % 1;
+        calculator: (deltaTime, vars) => {
+            vars.cycle = (vars.cycle + (deltaTime / tuning.DAY_LENGTH)) % 1;
 
-                if (this.dayCycle < 0.2)
-                    return util.transition.easeInOutQuad(this.dayCycle * 5);
-                if (this.dayCycle >= 0.1 && this.dayCycle < 0.5)
-                    return 1;
-                if (this.dayCycle >= 0.5 && this.dayCycle < 0.7)
-                    return 1 - util.transition.easeInOutQuad((this.dayCycle - 0.5) * 5);
-                
-                return 0;
-            }
-            calculator.dayCycle = 0;
-
-            return calculator;
-        })()
+            if (vars.cycle < 0.2)
+                return util.transition.easeInOutQuad(vars.cycle * 5);
+            if (vars.cycle >= 0.1 && vars.cycle < 0.5)
+                return 1;
+            if (vars.cycle >= 0.5 && vars.cycle < 0.7)
+                return 1 - util.transition.easeInOutQuad((vars.cycle - 0.5) * 5);
+            
+            return 0;
+        }
     }
 };
 
@@ -51,11 +46,11 @@ class DesertBiome extends BiomeGenerator {
             for (let j=0; j < height; j++) {
                 matrix[i][j] = new Tile(i, j, this.interactionProfile, {
                     'SUNLIGHT': { // very hot indeed
-                        min: 0,
-                        max: 1
+                        min: 0 + Math.random() * 0.2,
+                        max: 1 - Math.random() * 0.2,
+                        value: 0,
+                        cycle: 0
                     }
-                }, {
-                    'SUNLIGHT': 0
                 });
             }
         }

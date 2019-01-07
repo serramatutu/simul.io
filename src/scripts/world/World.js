@@ -24,12 +24,14 @@ class World {
     }
 
     update(deltaTime) {
+        this._container.clear();
         for (let i=0; i<this._width; i++)
-            for (let j=0; j<this._height; j++)
+            for (let j=0; j<this._height; j++) {
                 this._worldMatrix[i][j].update(deltaTime);
-
-        this._container.beginFill(this._worldMatrix[0][0].color);
-        this._container.drawRect(0, 0, 100, 100);
+                this._container.beginFill(this._worldMatrix[i][j].color);
+                this._container.drawRect(i*5, j*5, (i+1)*5, (j+1)*5);
+                this._container.endFill();
+            }
     }
 }
 

@@ -9,7 +9,7 @@ function main() {
         });
         container.appendChild(app.view);
 
-        var world = new World();
+        var world = new World(100, 60);
         app.stage.addChild(world.pixiContainer);
         app.ticker.add(world.update.bind(world));
     };
