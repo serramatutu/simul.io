@@ -1,12 +1,10 @@
 import globals from '../resources/globals';
 
 class CameraController {
-    constructor(domElem = globals.pixiApp.view,
-        camera = globals.camera,  
-        controlsProfile = globals.controlsProfile) {
-        this._domElem = domElem;
+    constructor(camera = globals.camera,  
+        controls = globals.controls) {
         this._camera = camera;
-        this._controls = controlsProfile;
+        this._controls = controls;
         this._velocity = CameraController.DEFAULT_VELOCITY;
         this._zoomVel = CameraController.DEFAULT_ZOOM_VELOCITY;
 
@@ -45,18 +43,21 @@ class CameraController {
     }
 
     _subscribe() {
-        // TODO: DOMEventManager. This is just for testing
-        this._domElem.addEventListener('keydown', (evt) => {
-            var controlName = globals.controlsProfile.getControl(evt.key.toUpperCase());
-            if (this._state.hasOwnProperty(controlName))
-                this._state[controlName] = true;
+        [
+            'CAMERA_LEFT',
+            'CAMERA_RIGHT',
+            'CAMERA_UP',
+            'CAMERA_DOWN',
+            'CAMERA_ZOOM_IN',
+            'CAMERA_ZOOM_OUT'
+        ].forEach(eventName => {
+            this._controls.on(eventName, (evt) => {
+                this._state[eventName] = evt.type == 'keydown';
+            });
         });
-
-        this._domElem.addEventListener('keyup', (evt) => {
-            var controlName = globals.controlsProfile.getControl(evt.key.toUpperCase());
-            if (this._state.hasOwnProperty(controlName))
-                this._state[controlName] = false;
-        });
+        
+        
+        
     }
 
     update(deltaTime) {

@@ -18,19 +18,19 @@ class Camera {
     }
 
     left(amt = 1) {
-        this.right(-amt);
-    }
-
-    right(amt = 1) {
         this._worldContainer.x += amt;
     }
 
+    right(amt = 1) {
+        this.left(-amt);
+    }
+
     up(amt = 1) {
-        this.down(-amt);
+        this._worldContainer.y += amt;
     }
 
     down(amt = 1) {
-        this._worldContainer.y += amt;
+        this.up(-amt);
     }
 
     zoomIn(amt = 1) {

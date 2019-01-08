@@ -8,8 +8,8 @@ class World {
         this._width = width;
         this._height = height;
 
-        // TODO: Temporary
         this._container = new PIXI.Container();
+        this._container.interactive = true;
 
         // TODO: Temporary
         this._worldMatrix = new DesertBiome().initialize(width, height);

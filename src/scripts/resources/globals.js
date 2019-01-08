@@ -1,12 +1,17 @@
-import ControlsProfile from '../io/ControlsProfile';
 import Initializer from './Initializer';
 
-var globals = {
-    camera: null,
-    controlsProfile: new ControlsProfile, // TODO: Temporary
-    pixiApp: null,
-    resourceInitializer: Initializer,
-    world: null
+var globals = {};
+
+window.onload = () => {
+    globals.camera = null;
+    globals.console = window.console;
+    globals.controls = null; // TODO = Temporary
+    globals.pixiApp = null;
+    globals.resourceInitializer = Initializer;
+    globals.world = null;
+
+    // load stuff
+    globals.resourceInitializer.loadAssets(globals.onload);
 };
 
 export default globals;

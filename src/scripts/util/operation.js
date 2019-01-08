@@ -14,6 +14,24 @@ function generateName(obj, name) {
 export { generateName };
 
 /**
+ * Attepts to access a position of an array. If it results in an error, returns the default value
+ * @param {Array} arr the array to be accessed
+ * @param {number} pos position
+ * @param {*} defaultValue the default value if the position is invalid
+ */
+function get(arr, pos, defaultValue) {
+    try {
+        var v = arr[pos];
+        return v;
+    }
+    catch (e) {
+        return defaultValue;
+    }
+}
+
+export { get };
+
+/**
  * Maps every element in s to a new form described by func
  * @param {Array|buckets.Set} s the original container
  * @param {function(Object):*} func the mapping function
