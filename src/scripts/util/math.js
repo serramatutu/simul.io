@@ -19,3 +19,15 @@ function lerpColor(start, end, t) {
 }
 
 export { lerpColor };
+
+/**
+ * Clamps a value between a minimum and max malue
+ * @param {number} value the value to be clamped
+ * @param {number} min the minimum value
+ * @param {number} max the maximum value
+ */
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
+
+export { clamp };

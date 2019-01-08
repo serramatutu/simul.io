@@ -4,6 +4,7 @@ import HtmlPlugin from 'html-webpack-plugin';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import CopyPlugin from 'copy-webpack-plugin';
 import yargs from 'yargs';
 
 var argv = yargs.count('production')
@@ -62,6 +63,11 @@ export default {
     },
     plugins: [
         new CleanPlugin('./dist'),
+        // TODO: this is temporary! Must find better asset bundling method which works with PIXI
+        new CopyPlugin([{
+            from: './src/assets/*',
+            to: './assets/[name].[ext]'
+        }]),
         new HtmlPlugin({
             template: 'src/index.html',
             inject: 'head'

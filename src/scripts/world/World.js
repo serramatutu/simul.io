@@ -9,29 +9,32 @@ class World {
         this._height = height;
 
         // TODO: Temporary
-        this._container = new PIXI.Graphics();
+        this._container = new PIXI.Container();
 
         // TODO: Temporary
         this._worldMatrix = new DesertBiome().initialize(width, height);
+
+        for (let i=0; i<this._width; i++) {
+            for (let j=0; j<this._height; j++) {
+                this._container.addChild(this._worldMatrix[i][j].sprite);
+            }
+        } 
     }
 
     get matrix() {
         return this.matrix;
     }
 
-    get pixiContainer() {
+    get container() {
         return this._container;
     }
 
     update(deltaTime) {
-        this._container.clear();
-        for (let i=0; i<this._width; i++)
+        for (let i=0; i<this._width; i++) {
             for (let j=0; j<this._height; j++) {
                 this._worldMatrix[i][j].update(deltaTime);
-                this._container.beginFill(this._worldMatrix[i][j].color);
-                this._container.drawRect(i*5, j*5, (i+1)*5, (j+1)*5);
-                this._container.endFill();
-            }
+            }    
+        } 
     }
 }
 
