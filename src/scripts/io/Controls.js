@@ -1,6 +1,5 @@
 import _ from 'underscore';
 import {DisplayObject} from 'pixi.js';
-import EventEmitter from 'events';
 import * as util from '../util/util';
 import globals from '../resources/globals';
 
@@ -95,9 +94,8 @@ _ActionListener.VALID_PIXI_EVENTS = _ActionListener.getValidEvents(DisplayObject
 /**
  * Provides an abstaction to commands given to the window through
  * events based on command triggers.
- * @extends EventEmitter
  */
-class Controls extends EventEmitter {
+class Controls {
     /**
      * Constructs the controls object
      * @param {Object} custom command customizations
@@ -117,9 +115,8 @@ class Controls extends EventEmitter {
      * }
      * var c = Controls(custom);
      */
-    constructor(custom = {}) {
-        super();
-
+    constructor(gameEventEmitter = globals.events, custom = {}) {
+        this._eventEmitter = gameEventEmitter;
         // Maps the value to its key. Eg: 'CAMERA_UP': 'A'
         this._controlMappings = new Map;
         _.each(Controls.DEFAULT_CONTROLS, (actionString, controlName) => {
@@ -149,7 +146,7 @@ class Controls extends EventEmitter {
 
         var listener = new _ActionListener(querySelector, gameSelector, actions, e => {
             e.name = controlName;
-            this.emit(controlName, e);
+            this._eventEmitter.emit(controlName, e);
         });
         this._controlMappings.set(controlName, listener);
     }

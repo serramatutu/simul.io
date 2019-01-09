@@ -2,9 +2,9 @@ import globals from '../resources/globals';
 
 class CameraController {
     constructor(camera = globals.camera,  
-        controls = globals.controls) {
+        gameEvents = globals.events) {
         this._camera = camera;
-        this._controls = controls;
+        this._gameEvents = gameEvents;
         this._velocity = CameraController.DEFAULT_VELOCITY;
         this._zoomVel = CameraController.DEFAULT_ZOOM_VELOCITY;
 
@@ -51,7 +51,7 @@ class CameraController {
             'CAMERA_ZOOM_IN',
             'CAMERA_ZOOM_OUT'
         ].forEach(eventName => {
-            this._controls.on(eventName, (evt) => {
+            this._gameEvents.on(eventName, (evt) => {
                 this._state[eventName] = evt.type == 'keydown';
             });
         });
@@ -61,8 +61,8 @@ class CameraController {
     }
 
     update(deltaTime) {
-        var v = (deltaTime/1000) * this._velocity,
-            z = (deltaTime/1000) * this._zoomVel;
+        var v = deltaTime * this._velocity,
+            z = deltaTime * this._zoomVel;
         if (this._state.CAMERA_LEFT)     this._camera.left(v);
         if (this._state.CAMERA_RIGHT)    this._camera.right(v);
         if (this._state.CAMERA_UP)       this._camera.up(v);
@@ -73,10 +73,13 @@ class CameraController {
 }
 
 /**
- * How the camera moves in pixels per second
+ * How the camera moves in pixels per frame (60 FPS)
  */
-CameraController.DEFAULT_VELOCITY = 1000;
+CameraController.DEFAULT_VELOCITY = 5;
 
-CameraController.DEFAULT_ZOOM_VELOCITY = 10;
+/**
+ * How the camera moves in scale factor per frame (60 FPS)
+ */
+CameraController.DEFAULT_ZOOM_VELOCITY = 0.05;
 
 export default CameraController;
