@@ -51,7 +51,7 @@ class DesertBiome extends BiomeGenerator {
                         value: 0,
                         cycle: 0
                     }
-                }, 'desert_tile.png');
+                }, 'desert.tileset.png');
             }
         }
 

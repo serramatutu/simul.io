@@ -20,15 +20,17 @@ class _ActionListener {
         this._actions = actions;
         this._callback = callback;
         
-        this._domTargets = querySelector == '' ?
+        this._domTargets = util.operation.isNullOrEmpty(querySelector) ?
             [window]
             : window.document.querySelectorAll(querySelector);
         this._gameTargets = [];
-        gameSelector.split(_RegexTests.SEPARATOR_TEST).forEach(name => {
-            var child = globals.pixiApp.stage.getChildByName(name);
-            if (child != null)
-                this._gameTargets.push(child);
-        });
+        if (!util.operation.isNullOrEmpty(gameSelector)) {
+            gameSelector.split(_RegexTests.SEPARATOR_TEST).forEach(name => {
+                var child = globals.pixiApp.stage.getChildByName(name);
+                if (child != null)
+                    this._gameTargets.push(child);
+            });
+        }
 
         this.subscribe();
     }

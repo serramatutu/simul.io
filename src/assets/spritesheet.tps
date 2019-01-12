@@ -185,7 +185,7 @@
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMargin</key>
-            <uint>1</uint>
+            <uint>0</uint>
             <key>trimMode</key>
             <enum type="SpriteSettings::TrimMode">None</enum>
             <key>tracerTolerance</key>
@@ -199,23 +199,23 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">desert_tile.png</key>
+            <key type="filename">desert_tileset.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>2,2,4,4</rect>
+                <rect>24,16,48,32</rect>
                 <key>scale9Paddings</key>
-                <rect>2,2,4,4</rect>
+                <rect>24,16,48,32</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
         </map>
         <key>fileList</key>
         <array>
-            <filename>desert_tile.png</filename>
+            <filename>desert_tileset.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

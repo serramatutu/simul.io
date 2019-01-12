@@ -14,19 +14,22 @@ function generateName(obj, name) {
 export { generateName };
 
 /**
- * Attepts to access a position of an array. If it results in an error, returns the default value
- * @param {Array} arr the array to be accessed
- * @param {number} pos position
+ * Attepts to access a position of an n-dimensional array. If it results in an error, returns the default value
+ * @param {Array(Array(...))} arr the array to be accessed
  * @param {*} defaultValue the default value if the position is invalid
+ * @param {number} arguments the indexes
  */
-function get(arr, pos, defaultValue) {
-    try {
-        var v = arr[pos];
-        return v;
+function get(arr, defaultValue) {
+    var argsIdx = 2,
+        v = arr;
+    while(_.isArray(v)) {
+        let idx = arguments[argsIdx++];
+        if (idx < 0 || idx >= v.length)
+            return defaultValue;
+        v = v[idx];
     }
-    catch (e) {
-        return defaultValue;
-    }
+
+    return v;
 }
 
 export { get };
@@ -53,3 +56,13 @@ function map(s, func) {
 }
 
 export { map };
+
+/**
+ * Checks whether a string is null or empty
+ * @param {string} s the string to be tested
+ */
+function isNullOrEmpty(s) {
+    return s === null || s === undefined || s === '';
+}
+
+export { isNullOrEmpty };

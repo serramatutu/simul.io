@@ -1,18 +1,20 @@
 import * as PIXI from 'pixi.js';
 import * as util from '../util/util';
+import * as tiling from '../graphic/tiling';
 
 class Tile {
-    constructor(x, y, interactionProfile, ecofactorVars, texturePath) {
+    constructor(x, y, interactionProfile, ecofactorVars, baseTexturePath) {
         this._interactionProfile = interactionProfile;
         this._ecofactorVars = util.convert.objectToDictionary(ecofactorVars);
         this._x = x;
         this._y = y;
-        this._sprite = new PIXI.Sprite(PIXI.Texture.fromFrame(texturePath));
-        this._sprite.x = this._x * Tile.TILE_SIZE;
-        this._sprite.y = this._y * Tile.TILE_SIZE;
+        this._baseTexturePath = baseTexturePath;
+        this._orientation = tiling.TileOrientation.CENTER;
+        this._sprite = new PIXI.Sprite(tiling.TEXTURES[baseTexturePath][this._orientation]);
+
+        this._sprite.x = this._x * tiling.TILE_SIZE;
+        this._sprite.y = this._y * tiling.TILE_SIZE;
         this._sprite.anchor.set(0.5, 0.5);
-        if (Tile.RANDOMIZE_ROTATION)
-            this._sprite.rotation = Math.floor(Math.random()*4)*Math.PI/2;
     }
 
     get x() {
@@ -23,11 +25,21 @@ class Tile {
         return this._x;
     }
 
-    get sprite() {
-        return this._sprite;
-    }
     get interactionProfile() {
         return this._interactionProfile;
+    }
+
+    get orientation() {
+        return this._orientation;
+    }
+
+    set orientation(o) {
+        this._orientation = o;
+        this._sprite.texture = tiling.TEXTURES[this._baseTexturePath][o];
+    }
+
+    get sprite() {
+        return this._sprite;
     }
 
     getEcofactorValue(name) {
@@ -42,9 +54,5 @@ class Tile {
         });
     }
 }
-
-Tile.TILE_SIZE = 8;
-
-Tile.RANDOMIZE_ROTATION = true;
 
 export default Tile;
