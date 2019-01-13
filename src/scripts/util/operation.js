@@ -66,3 +66,39 @@ function isNullOrEmpty(s) {
 }
 
 export { isNullOrEmpty };
+
+
+/**
+ * Gets a hashcode from a string
+ * @param {string} s the string to be hashed
+ * @returns {number} the hashcode for this string
+ */
+function hashString(s) {
+    var hash = 0, i, chr;
+    if (s.length === 0) 
+        return hash;
+    for (i = 0; i < s.length; i++) {
+        chr = s.charCodeAt(i);
+        hash = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
+}
+
+export { hashString };
+
+/**
+ * Hashes an object based on its properties
+ * @param {Object} o the object to be hashed
+ * @returns {number} the object hash
+ */
+function hashObject(o) {
+    var s = '';
+    _.each(o, (value, key) => {
+        s += value + key;
+    });
+
+    return hashString(s);
+}
+
+export { hashObject };

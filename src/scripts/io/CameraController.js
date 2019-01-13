@@ -1,4 +1,5 @@
 import globals from '../resources/globals';
+import * as mathUtils from '../util/math';
 
 class CameraController {
     constructor(camera = globals.camera,  
@@ -9,7 +10,6 @@ class CameraController {
         this._zoomVel = CameraController.DEFAULT_ZOOM_VELOCITY;
 
         this._state = {};
-        this._resetState();
         this._subscribe();
     }
 
@@ -33,15 +33,6 @@ class CameraController {
         this._zoomVel = v;
     }
 
-    _resetState() {
-        this._state.CAMERA_LEFT = 
-        this._state.CAMERA_RIGHT =
-        this._state.CAMERA_UP =
-        this._state.CAMERA_DOWN =
-        this._state.CAMERA_ZOOM_IN =
-        this._state.CAMERA_ZOOM_OUT = false;
-    }
-
     _subscribe() {
         [
             'CAMERA_LEFT',
@@ -51,24 +42,21 @@ class CameraController {
             'CAMERA_ZOOM_IN',
             'CAMERA_ZOOM_OUT'
         ].forEach(eventName => {
-            this._gameEvents.on(eventName, (evt) => {
-                this._state[eventName] = evt.type == 'keydown';
+            this._gameEvents.on(eventName, (deltaTime) => {
+                var v = deltaTime * this._velocity,
+                    z = deltaTime * this._zoomVel;
+                v = mathUtils.clamp(v/this._camera.zoom, v/5, v*5);
+
+                switch(eventName) {
+                case 'CAMERA_LEFT'     : this._camera.x += v; break;
+                case 'CAMERA_RIGHT'    : this._camera.x -= v; break;
+                case 'CAMERA_UP'       : this._camera.y += v; break;
+                case 'CAMERA_DOWN'     : this._camera.y -= v; break;
+                case 'CAMERA_ZOOM_IN'  : this._camera.zoom += z; break;
+                case 'CAMERA_ZOOM_OUT' : this._camera.zoom -= z; break;
+                }
             });
         });
-        
-        
-        
-    }
-
-    update(deltaTime) {
-        var v = deltaTime * this._velocity,
-            z = deltaTime * this._zoomVel;
-        if (this._state.CAMERA_LEFT)     this._camera.left(v);
-        if (this._state.CAMERA_RIGHT)    this._camera.right(v);
-        if (this._state.CAMERA_UP)       this._camera.up(v);
-        if (this._state.CAMERA_DOWN)     this._camera.down(v);
-        if (this._state.CAMERA_ZOOM_IN)  this._camera.zoomIn(z);
-        if (this._state.CAMERA_ZOOM_OUT) this._camera.zoomOut(z);
     }
 }
 
@@ -76,6 +64,11 @@ class CameraController {
  * How the camera moves in pixels per frame (60 FPS)
  */
 CameraController.DEFAULT_VELOCITY = 5;
+
+/**
+ * How intense the velocity change is according to zoom change
+ */
+CameraController.VELOCITY_MAX_SCALE = 5;
 
 /**
  * How the camera moves in scale factor per frame (60 FPS)

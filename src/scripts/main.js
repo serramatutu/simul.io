@@ -14,16 +14,21 @@ function main() {
         container.appendChild(app.view);
         globals.pixiApp = app;
 
-        var world = new World(100, 60);
+        var world = new World(100, 100);
         globals.world = world;
         globals.controls = new Controls;
-        globals.camera = new Camera(world.container);
+        globals.camera = new Camera({
+            worldContainer: world.container, 
+            screenWidth: app.screen.width, 
+            screenHeight: app.screen.height
+        });
         var cc = new CameraController(globals.camera);
+        globals.console.log(cc);
 
-        app.stage.addChild(globals.camera.container);
+        app.stage.addChild(globals.camera);
+        app.ticker.add(globals.controls.update.bind(globals.controls));
         app.ticker.add(world.update.bind(world));
-        app.ticker.add(cc.update.bind(cc));
-        app.ticker.minFPS = 45;
+
         var logger = document.getElementById('logger');
         var avg = 0;
         var qty=0;

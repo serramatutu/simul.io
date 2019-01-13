@@ -129,7 +129,7 @@ export { getOrientation };
 
 /**
  * Gets the bounding box for a single tile texture based on TILE_SIZE
- * @param {number} the TileOrientation
+ * @param {number} orientation the TileOrientation
  * @returns {PIXI.Rectangle} the bounding box
  */
 function frameFromOrientation(orientation) {
