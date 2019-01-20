@@ -3,17 +3,13 @@ import globals from '../resources/globals';
 
 /**
  * Facilitates binding events through method cascading
+ * 
+ * Event specification:
+ * - keyhold: whenever a key is being held down for some time
+ * - keydown: whenever a key is being pressed down
+ * - keyup: whenever a key has been released
  */
 class Action {
-    key(keys, targets) {
-        this.keydown(keys, targets);
-        return this.keyup(keys, targets);
-    }
-
-    keypress(keys, targets) {
-        return this._pushKeyEvent('keypress', keys, targets);
-    }
-
     keyup(keys, targets) {
         return this._pushKeyEvent('keyup', keys, targets);
     }
@@ -22,34 +18,36 @@ class Action {
         return this._pushKeyEvent('keydown', keys, targets);
     }
 
+    keyhold(keys, targets) {
+        return this._pushKeyEvent('keyhold', keys, targets);
+    }
+
     _pushKeyEvent(eventName, keys, targets) {
         var keysArray = [];
         for (let i=0; i<keys.length; i++)
             keysArray.push(keys.charAt(i));
         
-        var opts = [];
+        var params = [];
         keysArray.forEach(key => {
-            opts.push({
-                options: {
-                    key: key
-                },
-                targets: targets
+            params.push({
+                key: key,
+                targets: new Set(targets)
             });
         });
 
-        this._pushEvent('dom', eventName, opts);
+        this._pushEvent('dom', eventName, params);
 
         return this;
     }
 
-    _pushEvent(eventType, eventName, eventOptions) {
+    _pushEvent(eventType, eventName, eventParams) {
         if (!this[eventType])
             this[eventType] = {};
         if (!this[eventType][eventName])
             this[eventType][eventName] = [];
 
-        eventOptions.forEach(option => {
-            this[eventType][eventName].push(option);
+        eventParams.forEach(params => {
+            this[eventType][eventName].push(params);
         });
     }
 }
@@ -76,9 +74,7 @@ class Controls {
      *          dom: {
      *              keydown: [
      *                  {
-     *                      options: {
-     *                          key: 'a'
-     *                      }
+     *                      key: 'a'
      *                  }
      *              ]
      *          },
@@ -93,9 +89,12 @@ class Controls {
      */
     constructor(gameEventEmitter = globals.events, custom = {}) {
         this._eventEmitter = gameEventEmitter;
-        this._waiting = new Map;
+
+        this._prevDown = new Set;
+        this._down = new Set;
+
         this._domActions = new Map;
-        this._gameActions = new Map;
+        // this._gameActions = new Map;
 
         _.each(Controls.DEFAULT_CONTROLS, (actionObject, controlName) => {
             this.set(controlName, custom[controlName] || actionObject);
@@ -105,63 +104,61 @@ class Controls {
     }
 
     _setupListeners() {
-        this._domActions.forEach((actionSet, evtName) => {
-            window.addEventListener(evtName, e => {
-                actionSet.forEach(action => {
-                    // if the event should happen in another target
-                    if (action.targets.size > 0 && !action.targets.has(e.target))
-                        return;
-                    
-                    var matchedOpts = _.every(action.options, (value, name) => {
-                        return e[name] === value;
-                    });
+        window.addEventListener('keydown', e => {
+            this._down.add(e.key);
+        });
 
-                    // if the event fired matches the specified event options for the control
-                    if (!matchedOpts)
-                        return;
-
-                    this._waiting.set(action.controlName, e);
-                });
-            });
+        window.addEventListener('keyup', e => {
+            this._down.delete(e.key);
         });
     }
 
     /**
      * Remaps a control to a new action.
      * @param {string} controlName 
-     * @param {string} actionString 
+     * @param {string} actionObject 
      */
     set(controlName, actionObject) {
         _.each(actionObject.dom, (actions, actionName) => {
             actions.forEach(action => {
                 if (!this._domActions.has(actionName))
                     this._domActions.set(actionName, new Set);
-                this._domActions.get(actionName).add({
-                    options: action.options,
-                    targets: new Set(action.targets),
-                    controlName: controlName
-                });
-            });
-        });
-
-        _.each(actionObject.game, (actions, actionName) => {
-            actions.forEach(action => {
-                if (!this._gameActions.has(actionName))
-                    this._gameActions.set(actionName, new Set);
-                this._gameActions.get(actionName).add({
-                    options: action.options,
-                    targets: new Set(action.targets),
-                    controlName: controlName
-                });
+                action.controlName = controlName;
+                this._domActions.get(actionName).add(action);
             });
         });
     }
 
-    update(deltaTime) {
-        this._waiting.forEach((evt, controlName) => {
-            this._eventEmitter.emit(controlName, deltaTime, evt);
+    _emitEvents(deltaTime, evtName, check) {
+        let s = this._domActions.get(evtName);
+        if (!s) return;
+
+        s.forEach(action => {
+            if (check(action))
+                this._eventEmitter.emit(action.controlName, deltaTime);
         });
-        this._waiting.clear();
+    }
+
+    update(deltaTime) {
+        this._emitEvents(deltaTime, 'keyhold', action => {
+            return this._prevDown.has(action.key);
+        });
+
+        this._emitEvents(deltaTime, 'keydown', action => {
+            return this._down.has(action.key);
+        });
+
+        this._emitEvents(deltaTime, 'keyup', action => {
+            return this._prevDown.has(action.key) && !this._down.has(action.key);
+        });
+
+        for (let key of this._down)
+            this._prevDown.add(key);
+
+        for (let key of this._prevDown) {
+            if (!this._down.has(key))
+                this._prevDown.delete(key);
+        }
     }
 }
 

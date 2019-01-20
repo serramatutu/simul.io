@@ -199,7 +199,7 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
-            <key type="filename">desert_tileset.png</key>
+            <key type="filename">desert.tileset.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -215,7 +215,7 @@
         </map>
         <key>fileList</key>
         <array>
-            <filename>desert_tileset.png</filename>
+            <filename>desert.tileset.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

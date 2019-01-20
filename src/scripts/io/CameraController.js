@@ -9,7 +9,6 @@ class CameraController {
         this._velocity = CameraController.DEFAULT_VELOCITY;
         this._zoomVel = CameraController.DEFAULT_ZOOM_VELOCITY;
 
-        this._state = {};
         this._subscribe();
     }
 
